@@ -8,7 +8,9 @@ from torch.nn.utils import clip_grad_norm
 from torch.nn import functional as F
 from model import Encoder, Decoder, Seq2Seq
 from utils import load_dataset
-
+'''
+note:
+'''
 
 def parse_arguments():
     p = argparse.ArgumentParser(description='Hyperparams')
@@ -43,18 +45,18 @@ def evaluate(model, val_iter, vocab_size, DE, EN):
 def train(e, model, optimizer, train_iter, vocab_size, grad_clip, DE, EN):
     model.train()
     total_loss = 0
-    pad = EN.vocab.stoi['<pad>']
+    pad = EN.vocab.stoi['<pad>'] # 获得<pad>的数字编号
     for b, batch in enumerate(train_iter):
         src, len_src = batch.src
         trg, len_trg = batch.trg
         src, trg = src.cuda(), trg.cuda()
         optimizer.zero_grad()
         output = model(src, trg)
-        loss = F.cross_entropy(output[1:].view(-1, vocab_size),
+        loss = F.cross_entropy(output[1:].view(-1, vocab_size),  # 这里不取第0个数据，是因为第0个数据是<sos>标志位
                                trg[1:].contiguous().view(-1),
                                ignore_index=pad)
         loss.backward()
-        clip_grad_norm(model.parameters(), grad_clip)
+        clip_grad_norm(model.parameters(), grad_clip)  # 梯度裁剪
         optimizer.step()
         total_loss += loss.data[0]
 

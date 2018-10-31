@@ -1,5 +1,15 @@
 # PyTorch Seq2Seq
 
+- 增加部分注释
+
+- Sequence to Sequence Learning with Neural Networks.ipynb 
+增加Test Demo，可以查看训练模型将德语翻译得到的英语结果，并和训练目标结果的对比
+
+- TODO
+
+***
+
+
 This repo contains tutorials covering understanding and implementing sequence-to-sequence (seq2seq) models using [PyTorch](https://github.com/pytorch/pytorch) 0.4 and [TorchText](https://github.com/pytorch/text) 0.2.3 using Python 3.6.
 
 **If you find any mistakes or disagree with any of the explanations, please do not hesitate to [submit an issue](https://github.com/bentrevett/pytorch-seq2seq/issues/new). I welcome any feedback, positive or negative!**

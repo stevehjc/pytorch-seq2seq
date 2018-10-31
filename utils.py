@@ -22,7 +22,7 @@ def load_dataset(batch_size):
     #train, val, test = Multi30k.splits(exts=('.de', '.en'), fields=(DE, EN))
     
     train, val, test = TranslationDataset.splits(      
-          path = '.data/multi30k',  
+          path = 'data/multi30k',  
           exts = ['.de', '.en'],   
           fields = [('src', DE), ('trg', EN)],
           train = 'train', 
@@ -30,6 +30,7 @@ def load_dataset(batch_size):
           test = 'test2016')
     DE.build_vocab(train.src, min_freq=2)
     EN.build_vocab(train.trg, max_size=10000)
+    # BucketIterator会自动进行shuffle,会将长度相似的组合在一起，这样可以使每次的batch中的句子长度相似，有助于提高训练速度
     train_iter, val_iter, test_iter = BucketIterator.splits(
             (train, val, test), batch_size=batch_size, repeat=False)
     return train_iter, val_iter, test_iter, DE, EN

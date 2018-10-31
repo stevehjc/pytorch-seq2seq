@@ -77,8 +77,8 @@ class Decoder(nn.Module):
         context = context.transpose(0, 1)  # (1,B,N)
         # Combine embedded input word and attended context, run through RNN
         rnn_input = torch.cat([embedded, context], 2)
-        print("rn",rnn_input.shape)
-        print("lh",last_hidden.shape)
+        # print("rn",rnn_input.shape)
+        # print("lh",last_hidden.shape)
         output, hidden = self.gru(rnn_input, last_hidden)
         output = output.squeeze(0)  # (1,B,N) -> (B,N)
         context = context.squeeze(0)
@@ -102,11 +102,11 @@ class Seq2Seq(nn.Module):
         encoder_output, hidden = self.encoder(src)
         hidden = hidden[:self.decoder.n_layers]
         output = Variable(trg.data[0, :])  # sos
-        for t in range(1, max_len):
+        for t in range(1, max_len):  # 每次处理句子的一个位置
             output, hidden, attn_weights = self.decoder(
                     output, hidden, encoder_output)
             outputs[t] = output
             is_teacher = random.random() < teacher_forcing_ratio
-            top1 = output.data.max(1)[1]
-            output = Variable(trg.data[t] if is_teacher else top1).cuda()
+            top1 = output.data.max(1)[1]  # output.data.max()类似与np.max() 其中max(1)表示沿着第1轴，[1]表示返回的是索引，若为[0]表示返回的是最大值
+            output = Variable(trg.data[t] if is_teacher else top1).cuda()  # 训练trick，即随机使用GroundTrue来代替预测值，重点理解
         return outputs
